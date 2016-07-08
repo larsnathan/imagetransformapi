@@ -1,33 +1,47 @@
 class TransformController < ApplicationController
 
   require 'rubygems' 
-  require 'minimagick'
-  require 'json'
-
-  def create
-    img_input = params[:image]
-    image_file = File.open("image.jpg", "w+")
-    image_file.write(Base64.decode64(img_input))
-
-    MiniMagick::Tool::Mogrify.new do |mogrify|
-      mogrify.blur("5x3")
-      mogrify << "image.jpg"
-    end
-    
-    @picture = Picture.new("image.jpg")
-
-    @respond_to do |format|
-      if @picture.save
-        format.html { redirect_to @picture, notice: 'Picture was successfully created.' }
-        format.json { render json: @picture, status: :created, location: @picture }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @picture.errors, status: :unprocessable_entity }
-      end
-  end
+  require 'mini_magick'
+  require 'open-uri'
+  require 'cloudinary'
+  skip_before_action :verify_authenticity_token
 
   def index
     my_json = { :array => [1, 2, 3, { :sample => "hash"} ], :foo => "bar" }
-    puts JSON.pretty_generate(my_json)
+    render json: JSON.pretty_generate(my_json)
+  end
+
+  def create
+    img1_url = params[:picture1]
+    open('image1.jpg', 'wb') do |file|
+      file << open(img1_url).read
+    end
+
+    img2_url = params[:picture2]
+    open('image2.jpg', 'wb') do |file|
+      file << open(img2_url).read
+    end
+
+    first_image = MiniMagick::Image.new("image1.jpg")
+    second_image = MiniMagick::Image.new("image2.jpg")
+
+    result = first_image.composite(second_image) do |c|
+      c.compose "Over"    # OverCompositeOp
+      c.geometry "+20+20" # copy second_image onto first_image from (20, 20)
+    end
+    result.write "output.jpg"
+    # MiniMagick::Tool::Mogrify.new do |mogrify|
+    #   mogrify.blur("5x3")
+    #   mogrify << "image.jpg"
+    # end
+
+    auth = {
+      cloud_name: "natekronos",
+      api_key: "529551768137712",
+      api_secret: "86j1wf0r8JgITaKKdxgLDMnLNWY"
+    }
+    image_hash = Cloudinary::Uploader.upload('output.jpg', auth)
+    image_url = image_hash["url"]
+    render json: { :image_url => image_url }
   end
 end
