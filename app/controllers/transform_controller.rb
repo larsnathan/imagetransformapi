@@ -31,24 +31,23 @@ class TransformController < ApplicationController
     # end
     # result.write "output.jpg"
 
-    # image_url = params[:picture]
-    # open('image.jpg', 'wb') do |file|
-    #   file << open(image_url).read
-    # end
+    image_url = params[:picture]
+    open('image.jpg', 'wb') do |file|
+      file << open(image_url).read
+    end
 
-    # MiniMagick::Tool::Mogrify.new do |mogrify|
-    #   mogrify.blur("5x3")
-    #   mogrify << "image.jpg"
-    # end
+    MiniMagick::Tool::Mogrify.new do |mogrify|
+      mogrify.blur("5x3")
+      mogrify << "image.jpg"
+    end
 
-    # auth = {
-    #   cloud_name: "natekronos",
-    #   api_key: "529551768137712",
-    #   api_secret: "86j1wf0r8JgITaKKdxgLDMnLNWY"
-    # }
-    # image_hash = Cloudinary::Uploader.upload('image.jpg', auth)
-    # image_url = image_hash["url"]
-    # render json: { :image_url => image_url }
-    render json: { :thing => "I did a thing"}
+    auth = {
+      cloud_name: "natekronos",
+      api_key: "529551768137712",
+      api_secret: "86j1wf0r8JgITaKKdxgLDMnLNWY"
+    }
+    image_hash = Cloudinary::Uploader.upload('image.jpg', auth)
+    image_url = image_hash["url"]
+    render json: { :image_url => image_url }
   end
 end
