@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 gem 'tzinfo-data'
 gem 'mini_magick'
+gem 'mini_portile2'
 gem 'json'
 gem 'cloudinary'
 

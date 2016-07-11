@@ -16,3 +16,19 @@ runtime: ruby
 vm: true
 entrypoint: bundle exec rackup -p 8080 -E production config.ru
 # [END runtime]
+
+# gcloud config set project imagetransformbot \
+#   && gcloud source repos clone default \
+#     ~/src/imagetransformbot/ruby_mvms_quickstart \
+#   && cd ~/src/imagetransformbot/ruby_mvms_quickstart/ \
+#   && git checkout master
+
+# bundle install
+
+# sudo apt-get imagemagick
+
+# sudo apt-get graphicsmagick
+
+# bundle exec rails server --port=8080
+
+# gcloud app deploy
